@@ -35,30 +35,49 @@ public class SecurityConfiguration {
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter filter)throws Exception{
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter filter)throws Exception{
+//
+//        http.
+//                csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(
+//                        request->request.requestMatchers(
+//                                "/auth/**"
+//                        ).permitAll()
+//                                .anyRequest()
+//                                .authenticated()
+//                )
+//                .httpBasic(basic->basic.authenticationEntryPoint(authenticationEntryPoint))
+//                .exceptionHandling(Customizer.withDefaults())
+//                .sessionManagement(manager-> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authenticationProvider(authenticationProvider())
+//                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter filter)
+            throws Exception {
         http.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         request->request.requestMatchers(
-                                "/auth/**"
-                        ).permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
-                .httpBasic(basic->basic.authenticationEntryPoint(authenticationEntryPoint))
-                .exceptionHandling(Customizer.withDefaults())
-                .sessionManagement(manager-> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-
+                                "/auth/**",
+                                "/view/**",
+                                "/users/**"
+                        ).permitAll().anyRequest().authenticated()).
+                httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint)).
+                exceptionHandling(Customizer.withDefaults()).
+                sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
+                authenticationProvider(authenticationProvider()).addFilterBefore(filter,
+                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

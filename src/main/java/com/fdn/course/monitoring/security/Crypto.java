@@ -57,8 +57,8 @@ public class Crypto {
 
 
 
-//        strToEncrypt = "jdbc:sqlserver://localhost:1433;databaseName=FutuhDB;encrypt=true;trustServerCertificate=true";
-//        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
+        strToEncrypt = "jdbc:sqlserver://localhost:1433;databaseName=fdn;encrypt=true;trustServerCertificate=true";
+        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
 //
 //        strToEncrypt = "Futuh354";
 //        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
