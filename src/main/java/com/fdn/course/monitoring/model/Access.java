@@ -18,6 +18,14 @@ import java.util.List;
 @Entity
 @Table(name = "MstAkses")
 public class Access {
+
+    public Access(String nama, String deskripsi, LocalDateTime createdTime, List<Menu> ltMenu) {
+        this.nama = nama;
+        this.deskripsi = deskripsi;
+        this.createdTime = createdTime;
+        this.ltMenu = ltMenu;
+    }
+
     @Id
     @Column(name = "IDAkses")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

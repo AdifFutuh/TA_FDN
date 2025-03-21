@@ -17,6 +17,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "MstMenu")
 public class Menu {
+    public Menu(String nama, String path, LocalDateTime createdDate) {
+        this.nama = nama;
+        this.path = path;
+        this.createdDate = createdDate;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
