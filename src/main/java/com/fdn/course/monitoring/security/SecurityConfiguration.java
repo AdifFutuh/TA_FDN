@@ -70,8 +70,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         request->request.requestMatchers(
                                 "/auth/**",
-                                "/view/**",
-                                "/users/**"
+                                "/view/**"
                         ).permitAll().anyRequest().authenticated()).
                 httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint)).
                 exceptionHandling(Customizer.withDefaults()).

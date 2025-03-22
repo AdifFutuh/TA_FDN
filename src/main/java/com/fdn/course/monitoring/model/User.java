@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -46,9 +47,6 @@ public class User implements UserDetails {
     @Column(name = "TanggalLahir")
     private LocalDate tanggalLahir;
 
-    @Transient
-    private Integer umur;
-
     @Column(name = "ProfilePicture")
     private String pathImage;
 
@@ -59,7 +57,7 @@ public class User implements UserDetails {
     private Boolean isRegistered=false;
 
     @ManyToOne
-    @JoinColumn(name = "IDAkses",foreignKey = @ForeignKey(name = "fk-user-to-akses"))
+    @JoinColumn(name = "IdAkses",foreignKey = @ForeignKey(name = "fk-user-to-akses"))
     private Access akses;
 
     @Column(name = "CreatedBy",nullable = false,updatable = false)
@@ -79,6 +77,14 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "IdOtp")
     private Otp otp;
+
+    @ManyToMany
+    @JoinTable(
+            name = "MapUserDetailCourse", uniqueConstraints = @UniqueConstraint(name = "unq-user-to-detailcourse", columnNames = {"IdUser, IdDetailCourse"}),
+            joinColumns = @JoinColumn(name = "IdUser", foreignKey = @ForeignKey(name = "fk-to-course")),
+            inverseJoinColumns = @JoinColumn(name = "IdDetailCourse", foreignKey = @ForeignKey(name = "fk-to-user"))
+    )
+    private List<DetailCourse> ltDetailCourse;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

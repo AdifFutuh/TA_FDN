@@ -39,19 +39,20 @@ public class InitialData implements CommandLineRunner {
                 new Menu("Dashboard", "/dashboard", LocalDateTime.now()),
                 new Menu("Manajemen Pengguna", "/users", LocalDateTime.now()),
                 new Menu("Manajemen Akses", "/access", LocalDateTime.now()),
+                new Menu("Daftar Pengguna", "/user-list", LocalDateTime.now()),
                 new Menu("Daftar Kursus", "/courses", LocalDateTime.now())
         );
         menuRepository.saveAll(menus);
 
         if (accessRepository.count() > 0 ) {
-            System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
+            System.out.println("Data sudah ada, tidak perlu insert ulang.");
             return;
         }
 
         List<Access> accesses = List.of(
                 new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), menus),
                 new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(), menus),
-                new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(), List.of(menus.get(3))) // Hanya akses ke "Daftar Kursus"
+                new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(), List.of(menus.get(3)))
         );
         accessRepository.saveAll(accesses);
 
@@ -65,7 +66,7 @@ public class InitialData implements CommandLineRunner {
             superAdmin.setNoHp("0000000000");
             superAdmin.setAlamat("alamat super admin dimana-mana");
             superAdmin.setIsRegistered(true);
-            superAdmin.setPassword(BcryptImpl.hash(superAdmin.getNama() + "superman"));
+            superAdmin.setPassword(BcryptImpl.hash(superAdmin.getUsername() + "superman"));
 
             accessRepository.findBynama("Super Admin")
                     .ifPresentOrElse(

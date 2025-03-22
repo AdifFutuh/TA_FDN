@@ -27,7 +27,7 @@ public class Access {
     }
 
     @Id
-    @Column(name = "IDAkses")
+    @Column(name = "IdAkses")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -54,8 +54,8 @@ public class Access {
     @ManyToMany
     @JoinTable(
             name = "MapAksesMenu", uniqueConstraints = @UniqueConstraint(name = "unq-akses-to-menu", columnNames = {"IDAkses, IDMenu"}),
-            joinColumns = @JoinColumn(name = "IDAkses", foreignKey = @ForeignKey(name = "fk-to-akses")),
-            inverseJoinColumns = @JoinColumn(name = "IDMenu", foreignKey = @ForeignKey(name = "fk-to-menu"))
+            joinColumns = @JoinColumn(name = "IdAkses", foreignKey = @ForeignKey(name = "fk-to-akses")),
+            inverseJoinColumns = @JoinColumn(name = "IdMenu", foreignKey = @ForeignKey(name = "fk-to-menu"))
     )
     private List<Menu> ltMenu;
 }

@@ -25,6 +25,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtility jwtUtility;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -32,21 +33,26 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         String authorization = request.getHeader("Authorization");
+        authorization = authorization==null ? "" : authorization;
         String token = null;
         String username = null;
 
         try{
-            if (authorization.startsWith("Bearer") && authorization.length() > 7){
+            if(!"".equals(authorization) && authorization.startsWith("Bearer ") && authorization.length()>7){
                 token = authorization.substring(7);
 
                 if (JwtConfig.getTokenEncryptEnable().equals("y")){
                     token = Crypto.performDecrypt(token);
                 }
                 username = jwtUtility.getUsernameFromToken(token);
-                String contentType = request.getContentType();
+                System.out.println(username);
+
+                String contentType = request.getContentType()==null?"":request.getContentType();
                 if(!contentType.startsWith("multipart/form-data") || contentType.isBlank()){
                     request = new MyHttpServletRequestWrapper(request);
                 }
+                boolean cek  = SecurityContextHolder.getContext().getAuthentication() == null;
+                System.out.println(cek);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
                     if (jwtUtility.validateToken(token)){
                         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

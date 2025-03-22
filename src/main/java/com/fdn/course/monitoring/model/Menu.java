@@ -47,4 +47,6 @@ public class Menu {
     @Column(name = "ModifiedDate", insertable = false)
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
+
+
 }
