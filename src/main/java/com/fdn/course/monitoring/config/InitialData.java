@@ -36,6 +36,7 @@ public class InitialData implements CommandLineRunner {
         }
 
         List<Menu> menus = List.of(
+                new Menu("Dashboard-admin", "/dashboard-admin", LocalDateTime.now()),
                 new Menu("Dashboard", "/dashboard", LocalDateTime.now()),
                 new Menu("Manajemen Pengguna", "/users", LocalDateTime.now()),
                 new Menu("Manajemen Akses", "/access", LocalDateTime.now()),

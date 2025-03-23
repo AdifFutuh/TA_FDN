@@ -2,13 +2,16 @@ package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.core.IService;
 import com.fdn.course.monitoring.dto.response.RespUserDTO;
+import com.fdn.course.monitoring.dto.validation.ValUserDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
 import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.repository.UserRepository;
+import com.fdn.course.monitoring.security.JwtUtility;
 import com.fdn.course.monitoring.util.LoggingFile;
 import com.fdn.course.monitoring.util.TransformPagination;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +22,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,6 +35,9 @@ public class UserService implements IService<User> {
     @Autowired
     private TransformPagination transformPagination;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public ResponseEntity<Object> save(User user, HttpServletRequest request) {
         return null;
@@ -38,7 +45,28 @@ public class UserService implements IService<User> {
 
     @Override
     public ResponseEntity<Object> update(Long id, User user, HttpServletRequest request) {
-        return null;
+        Map<String,Object> mapToken = JwtUtility.extractToken(request);
+
+        if (user == null){
+            return GlobalResponse.dataTidakValid("",request);
+        }
+        try{
+            Optional<User> userOptional = userRepository.findById(id);
+            if (userOptional.isEmpty()){
+                return GlobalResponse.dataTidakDitemukan("",request);
+            }
+            User userNext = userOptional.get();
+            modelMapper.map(user, userNext);
+            userNext.setModifiedBy(Long.valueOf(mapToken.get("userId").toString()));
+
+            // Simpan perubahan
+            userRepository.save(userNext);
+
+            return GlobalResponse.dataBerhasilDiubah(request);
+        } catch (Exception e) {
+            //Logging error//
+            return GlobalResponse.terjadiKesalahan("",request);
+        }
     }
 
     @Override
@@ -122,5 +150,9 @@ public class UserService implements IService<User> {
             responseListDTO.add(respUserDTO);
         }
         return responseListDTO;
+    }
+
+    public User convertDtoToEntity(ValUserDTO regisDTO){
+        return modelMapper.map(regisDTO, User.class);
     }
 }

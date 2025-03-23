@@ -1,7 +1,7 @@
 package com.fdn.course.monitoring.controller;
 
 import com.fdn.course.monitoring.dto.validation.ValLoginDTO;
-import com.fdn.course.monitoring.dto.validation.ValRegistrationDTO;
+import com.fdn.course.monitoring.dto.validation.ValUserDTO;
 import com.fdn.course.monitoring.dto.validation.ValVerifyRegisDTO;
 import com.fdn.course.monitoring.service.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class AuthController {
     private UserDetailsServiceImpl userDetailsService;
 
     @PostMapping("/regis")
-    public ResponseEntity<Object> regis(@Valid @RequestBody ValRegistrationDTO regisDTO,
+    public ResponseEntity<Object> regis(@Valid @RequestBody ValUserDTO regisDTO,
                                         HttpServletRequest request){
         return userDetailsService.regis(userDetailsService.convertDtoToEntity(regisDTO), request);
     }

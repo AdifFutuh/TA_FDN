@@ -13,7 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Data
-public class ValRegistrationDTO {
+public class ValUserDTO {
 
     @Pattern(regexp = "^([a-z0-9]{8,16})$",
             message = "Format Huruf kecil ,numeric saja min 8 max 16 karakter, contoh : jaenudin123")

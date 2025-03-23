@@ -2,7 +2,7 @@ package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.config.JwtConfig;
 import com.fdn.course.monitoring.dto.validation.ValLoginDTO;
-import com.fdn.course.monitoring.dto.validation.ValRegistrationDTO;
+import com.fdn.course.monitoring.dto.validation.ValUserDTO;
 import com.fdn.course.monitoring.dto.validation.ValVerifyRegisDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
 import com.fdn.course.monitoring.model.Otp;
@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -186,7 +185,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
 
-    public User convertDtoToEntity(ValRegistrationDTO regisDTO){
+    public User convertDtoToEntity(ValUserDTO regisDTO){
         return modelMapper.map(regisDTO, User.class);
     }
 

@@ -4,6 +4,7 @@ import com.fdn.course.monitoring.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -62,5 +63,14 @@ public class JwtUtility {
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    public static Map<String, Object> extractToken(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        token = token.substring(7);
+        if (JwtConfig.getTokenEncryptEnable().equals("y")){
+            token = Crypto.performDecrypt(token);
+        }
+        return new JwtUtility().mappingBodyToken(token);
     }
 }

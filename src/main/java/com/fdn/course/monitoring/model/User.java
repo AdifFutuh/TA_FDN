@@ -78,14 +78,6 @@ public class User implements UserDetails {
     @JoinColumn(name = "IdOtp")
     private Otp otp;
 
-    @ManyToMany
-    @JoinTable(
-            name = "MapUserDetailCourse", uniqueConstraints = @UniqueConstraint(name = "unq-user-to-detailcourse", columnNames = {"IdUser, IdDetailCourse"}),
-            joinColumns = @JoinColumn(name = "IdUser", foreignKey = @ForeignKey(name = "fk-to-course")),
-            inverseJoinColumns = @JoinColumn(name = "IdDetailCourse", foreignKey = @ForeignKey(name = "fk-to-user"))
-    )
-    private List<DetailCourse> ltDetailCourse;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<Menu> listMenu = this.akses.getLtMenu();

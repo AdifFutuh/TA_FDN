@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "MapUserDetailCourse")
+@Table(name = "MapUserDetailCourse",uniqueConstraints = @UniqueConstraint(name = "unq-user-to-detailcourse", columnNames = {"IdUser", "IdDetailCourse"}))
 public class MapUserDetailCourse {
 
     @Id
@@ -14,11 +14,11 @@ public class MapUserDetailCourse {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "IdUser", nullable = false)
+    @JoinColumn(name = "IdUser", nullable = false, foreignKey = @ForeignKey(name = "fk-to-user"))
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "IdDetailCourse", nullable = false)
+    @JoinColumn(name = "IdDetailCourse", nullable = false, foreignKey = @ForeignKey(name = "fk-to-course"))
     private DetailCourse detailCourse;
 
     @Column(columnDefinition = "TEXT")
