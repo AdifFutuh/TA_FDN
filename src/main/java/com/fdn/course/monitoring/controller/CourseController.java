@@ -12,6 +12,9 @@ import com.fdn.course.monitoring.service.UserCourseProdressService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +65,10 @@ public class CourseController {
         return mapUserDetailCourseService.save(mapUserDetailCourseService.convertDtoToEntity(mapUserDetailCourseDTO), request);
     }
 
-
+    @GetMapping("/all-summary")
+    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    public ResponseEntity<Object> findAllMapUserDetailCourseInfo(HttpServletRequest request){
+        Pageable pageable = PageRequest.of(0,20, Sort.by("id"));
+        return mapUserDetailCourseService.findAll(pageable,request);
+    }
 }
