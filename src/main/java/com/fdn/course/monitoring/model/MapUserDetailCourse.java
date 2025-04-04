@@ -36,7 +36,6 @@ public class MapUserDetailCourse {
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedAt;
 
-    @ManyToOne
     @Column(name = "ApprovedBy",insertable = false)
     private Long approvedBy;
 
