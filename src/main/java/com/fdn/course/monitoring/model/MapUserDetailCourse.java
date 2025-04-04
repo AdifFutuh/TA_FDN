@@ -2,9 +2,12 @@ package com.fdn.course.monitoring.model;
 
 import com.fdn.course.monitoring.util.Status;
 import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "MapUserDetailCourse",uniqueConstraints = @UniqueConstraint(name = "unq-user-to-detailcourse", columnNames = {"IdUser", "IdDetailCourse"}))
 public class MapUserDetailCourse {
@@ -27,15 +30,15 @@ public class MapUserDetailCourse {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date submittedAt ;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date approvedAt;
 
     @ManyToOne
-    @JoinColumn(name = "approved_by")
-    private User approvedBy; ;
+    @Column(name = "ApprovedBy",insertable = false)
+    private Long approvedBy;
 
 
 

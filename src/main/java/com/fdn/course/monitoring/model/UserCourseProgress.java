@@ -2,14 +2,14 @@ package com.fdn.course.monitoring.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "UserCourseProgress")
+@Table(name = "MapUserCourseProgress")
 public class UserCourseProgress {
 
     @Id
@@ -27,7 +27,14 @@ public class UserCourseProgress {
     @Column(name = "persentase", nullable = false)
     private Double persentase = 0.0;
 
+    @Column(name = "CreatedDate",nullable = false,updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
     @UpdateTimestamp
+    @Column(name = "UpdateDate",nullable = false,updatable = false)
     private LocalDateTime updateTime;
 
+    @Column(name = "ModifiedBy",insertable = false)
+    private Long modifiedBy=1L;
 }

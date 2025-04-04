@@ -25,8 +25,10 @@ public class AuthController {
     }
 
     @PostMapping("/verify-regis")
-    public ResponseEntity<Object> verifyRegis(@Valid @RequestBody ValVerifyRegisDTO verifyRegisDTO,
-                                              HttpServletRequest request){
+    public ResponseEntity<Object> verifyRegis(
+            @Valid @RequestBody ValVerifyRegisDTO verifyRegisDTO,
+            HttpServletRequest request
+    ){
         return userDetailsService.verifyRegis(userDetailsService.convertDtoToEntity(verifyRegisDTO),request);
     }
 

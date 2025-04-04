@@ -1,12 +1,10 @@
 package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.core.IService;
-import com.fdn.course.monitoring.dto.validation.ValCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValDetailCourseDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
 import com.fdn.course.monitoring.model.Course;
 import com.fdn.course.monitoring.model.DetailCourse;
-import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.repository.CourseRepository;
 import com.fdn.course.monitoring.repository.DetailCourseRepository;
 import jakarta.servlet.http.HttpServletRequest;

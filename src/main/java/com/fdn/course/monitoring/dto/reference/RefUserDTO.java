@@ -1,11 +1,14 @@
 package com.fdn.course.monitoring.dto.reference;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-
-public class RefCourseDTO {
+@AllArgsConstructor
+public class RefUserDTO {
     private long id;
+
+
 }

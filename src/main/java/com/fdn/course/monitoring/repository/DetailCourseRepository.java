@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface DetailCourseRepository extends JpaRepository<DetailCourse, Long> {
 
     boolean existsByCourse(Course course);
+
+    long countByCourse(Course course);
 }

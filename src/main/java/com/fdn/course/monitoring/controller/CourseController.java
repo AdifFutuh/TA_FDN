@@ -1,21 +1,23 @@
 package com.fdn.course.monitoring.controller;
 
+import com.fdn.course.monitoring.dto.reference.RefDetailCourseDTO;
+import com.fdn.course.monitoring.dto.reference.RefUserDTO;
 import com.fdn.course.monitoring.dto.validation.ValCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValDetailCourseDTO;
+import com.fdn.course.monitoring.dto.validation.ValMapUserDetailCourseDTO;
 import com.fdn.course.monitoring.service.CourseService;
 import com.fdn.course.monitoring.service.DetailCourseService;
+import com.fdn.course.monitoring.service.MapUserDetailCourseService;
+import com.fdn.course.monitoring.service.UserCourseProdressService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("Course")
+@RequestMapping("course")
 public class CourseController {
 
     @Autowired
@@ -23,6 +25,9 @@ public class CourseController {
 
     @Autowired
     private DetailCourseService detailCourseService;
+
+    @Autowired
+    private MapUserDetailCourseService mapUserDetailCourseService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('Dashboard-admin')")
@@ -41,4 +46,21 @@ public class CourseController {
     ){
         return detailCourseService.save(detailCourseService.convertDtoToEntity(detailCourseDTO), request);
     }
+
+    @PostMapping("/{idUser}/{idDetailCourse}")
+    @PreAuthorize("hasAuthority('Dashboard')")
+    public ResponseEntity<Object> addProgress(
+            @PathVariable(value = "idUser") long idUser,
+            @PathVariable(value = "idDetailCourse") long idDetailCourse,
+            @RequestBody ValMapUserDetailCourseDTO mapUserDetailCourseDTO,
+            HttpServletRequest request
+    ){
+        RefUserDTO refUserDTO = new RefUserDTO(idUser);
+        RefDetailCourseDTO detailCourseDTO = new RefDetailCourseDTO(idDetailCourse);
+        mapUserDetailCourseDTO.setUser(refUserDTO);
+        mapUserDetailCourseDTO.setDetailCourse(detailCourseDTO);
+        return mapUserDetailCourseService.save(mapUserDetailCourseService.convertDtoToEntity(mapUserDetailCourseDTO), request);
+    }
+
+
 }
