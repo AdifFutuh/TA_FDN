@@ -35,59 +35,74 @@ public class InitialData implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-
-        if (groupMenuRepository.count() > 0 ) {
-            System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
-            return;
+        if (groupMenuRepository.count() == 0) {
+            List<GroupMenu> groupMenus = List.of(
+                    new GroupMenu("Admin", "untuk keperluan manajemen akun user"),
+                    new GroupMenu("Kursus", "untuk menu-menu terkait kursus"),
+                    new GroupMenu("Report", "untuk menu-menu dashboard dan print laporan"),
+                    new GroupMenu("Pengguna", "untuk menu-menu pengguna")
+            );
+            groupMenuRepository.saveAll(groupMenus);
+            System.out.println("✅ GroupMenu berhasil ditambahkan.");
+        } else {
+            System.out.println("⚡ GroupMenu sudah ada, tidak perlu insert ulang.");
         }
 
-        List<GroupMenu> groupMenus = List.of(
-                new GroupMenu("Admin","untuk keperluan manajemen akun user"),
-                new GroupMenu("Kursus", "untuk menu-menu terkait kursus"),
-                new GroupMenu("Report","untuk menu-menu dashboard dan print laporan"),
-                new GroupMenu("Pengguna", "untuk menu-menu pengguna")
-        );
+        if (menuRepository.count() == 0) {
+            List<GroupMenu> groupMenus = groupMenuRepository.findAll();
 
-        groupMenuRepository.saveAll(groupMenus);
+            GroupMenu adminGroup = groupMenus.stream()
+                    .filter(g -> g.getNama().equals("Admin"))
+                    .findFirst().orElseThrow(() -> new RuntimeException("GroupMenu Admin tidak ditemukan"));
+            GroupMenu reportGroup = groupMenus.stream()
+                    .filter(g -> g.getNama().equals("Report"))
+                    .findFirst().orElseThrow(() -> new RuntimeException("GroupMenu Report tidak ditemukan"));
+            GroupMenu penggunaGroup = groupMenus.stream()
+                    .filter(g -> g.getNama().equals("Pengguna"))
+                    .findFirst().orElseThrow(() -> new RuntimeException("GroupMenu Pengguna tidak ditemukan"));
+            GroupMenu kursusGroup = groupMenus.stream()
+                    .filter(g -> g.getNama().equals("Kursus"))
+                    .findFirst().orElseThrow(() -> new RuntimeException("GroupMenu Kursus tidak ditemukan"));
 
-        if (menuRepository.count() > 0 ) {
-            System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
-            return;
+            List<Menu> menus = List.of(
+                    new Menu("Dashboard Admin", adminGroup, "/dashboard-admin", LocalDateTime.now()),
+                    new Menu("menu", adminGroup, "/menu", LocalDateTime.now()),
+                    new Menu("Dashboard", reportGroup, "/dashboard", LocalDateTime.now()),
+                    new Menu("Manajemen Pengguna", adminGroup, "/users", LocalDateTime.now()),
+                    new Menu("Manajemen Akses", adminGroup, "/access", LocalDateTime.now()),
+                    new Menu("Daftar Pengguna", penggunaGroup, "/user-list", LocalDateTime.now()),
+                    new Menu("Daftar Kursus", kursusGroup, "/courses", LocalDateTime.now())
+            );
+            menuRepository.saveAll(menus);
+            System.out.println("✅ Menu berhasil ditambahkan.");
+        } else {
+            System.out.println("⚡ Menu sudah ada, tidak perlu insert ulang.");
         }
 
-        List<Menu> menus = List.of(
-                new Menu("Dashboard Admin", groupMenus.getFirst(), "/dashboard-admin", LocalDateTime.now()),
-                new Menu("menu", groupMenus.getFirst(), "/menu", LocalDateTime.now()),
-                new Menu("Dashboard", groupMenus.get(2),"/dashboard", LocalDateTime.now()),
-                new Menu("Manajemen Pengguna", groupMenus.getFirst(),"/users", LocalDateTime.now()),
-                new Menu("Manajemen Akses", groupMenus.getFirst(), "/access", LocalDateTime.now()),
-                new Menu("Daftar Pengguna", groupMenus.get(3), "/user-list", LocalDateTime.now()),
-                new Menu("Daftar Kursus", groupMenus.get(1), "/courses", LocalDateTime.now())
-        );
-        menuRepository.saveAll(menus);
+        if (accessRepository.count() == 0) {
+            List<Menu> allMenus = menuRepository.findAll();
 
-        if (accessRepository.count() > 0 ) {
-            System.out.println("Data sudah ada, tidak perlu insert ulang.");
-            return;
+            Access superAdminAccess = new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), allMenus);
+            Access adminAccess = new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(), allMenus);
+
+            Access pesertaAccess = new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(),
+                    List.of(
+                            allMenus.stream().filter(m -> m.getNama().equals("Dashboard")).findFirst()
+                                    .orElseThrow(() -> new RuntimeException("Menu Dashboard tidak ditemukan")),
+                            allMenus.stream().filter(m -> m.getNama().equals("Manajemen Pengguna")).findFirst()
+                                    .orElseThrow(() -> new RuntimeException("Menu Manajemen Pengguna tidak ditemukan")),
+                            allMenus.stream().filter(m -> m.getNama().equals("Daftar Pengguna")).findFirst()
+                                    .orElseThrow(() -> new RuntimeException("Menu Daftar Pengguna tidak ditemukan")),
+                            allMenus.stream().filter(m -> m.getNama().equals("Daftar Kursus")).findFirst()
+                                    .orElseThrow(() -> new RuntimeException("Menu Daftar Kursus tidak ditemukan"))
+                    )
+            );
+
+            accessRepository.saveAll(List.of(superAdminAccess, adminAccess, pesertaAccess));
+            System.out.println("✅ Access berhasil ditambahkan.");
+        } else {
+            System.out.println("⚡ Access sudah ada, tidak perlu insert ulang.");
         }
-
-        List<Menu> allMenus = menuRepository.findAll();
-        List<Access> accesses = List.of(
-                new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), allMenus),
-                new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(), allMenus),
-                new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(),
-                        List.of(
-                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Dashboard")).findFirst().orElse(null)),
-                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Manajemen Pengguna")).findFirst().orElse(null)),
-                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Daftar Pengguna")).findFirst().orElse(null)),
-                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Daftar Kursus")).findFirst().orElse(null))
-                        )
-                )
-        );
-
-        accessRepository.saveAll(accesses);
-
-        System.out.println(" Initial data berhasil ditambahkan ke database!");
 
         if (!userRepository.existsByEmail("admin@gmail.com")) {
             User superAdmin = new User();
@@ -99,17 +114,16 @@ public class InitialData implements CommandLineRunner {
             superAdmin.setIsRegistered(true);
             superAdmin.setPassword(BcryptImpl.hash(superAdmin.getUsername() + "superman"));
 
-            accessRepository.findBynama("Super Admin")
-                    .ifPresentOrElse(
-                            superAdmin::setAkses,
-                            () -> System.out.println(" Akses 'Super Admin' tidak ditemukan, pengguna tidak ditambahkan ke database!")
-                    );
+            Access akses = accessRepository.findBynama("Super Admin")
+                    .orElseThrow(() -> new RuntimeException("Akses Super Admin tidak ditemukan"));
+            superAdmin.setAkses(akses);
 
             userRepository.save(superAdmin);
-            System.out.println(" Pengguna Super Admin berhasil ditambahkan!");
+            System.out.println("✅ Pengguna Super Admin berhasil ditambahkan!");
         } else {
-            System.out.println(" Pengguna Super Admin sudah ada, tidak perlu insert ulang.");
+            System.out.println("⚡ Pengguna Super Admin sudah ada, tidak perlu insert ulang.");
         }
     }
+
 }
 

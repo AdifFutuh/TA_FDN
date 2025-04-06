@@ -55,8 +55,8 @@ public class User implements UserDetails {
     @Column(name = "IsRegistered")
     private Boolean isRegistered=false;
 
-    @ManyToOne
-    @JoinColumn(name = "IdAkses",foreignKey = @ForeignKey(name = "fk-user-to-akses"))
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "IdAkses", foreignKey = @ForeignKey(name = "fk-user-to-akses"))
     private Access akses;
 
     @Column(name = "CreatedBy",nullable = false,updatable = false)
