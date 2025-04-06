@@ -86,8 +86,7 @@ public class User implements UserDetails {
         for (Menu menu : listMenu){
             grantedAuthorities.add(new SimpleGrantedAuthority(menu.getNama()));
         }
+        System.out.println("Jumlah menu: " + this.akses.getLtMenu().size());
         return grantedAuthorities;
     }
-
-
 }

@@ -53,7 +53,7 @@ public class Access {
 
     @ManyToMany
     @JoinTable(
-            name = "MapAksesMenu", uniqueConstraints = @UniqueConstraint(name = "unq-akses-to-menu", columnNames = {"IDAkses, IDMenu"}),
+            name = "MapAksesMenu", uniqueConstraints = @UniqueConstraint(name = "unq-akses-to-menu", columnNames = {"IdAkses", "IdMenu"}),
             joinColumns = @JoinColumn(name = "IdAkses", foreignKey = @ForeignKey(name = "fk-to-akses")),
             inverseJoinColumns = @JoinColumn(name = "IdMenu", foreignKey = @ForeignKey(name = "fk-to-menu"))
     )

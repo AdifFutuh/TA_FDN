@@ -1,6 +1,7 @@
 package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.core.IService;
+import com.fdn.course.monitoring.dto.response.RespMapUserDetailCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValMapUserDetailCourseDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
 import com.fdn.course.monitoring.model.DetailCourse;
@@ -13,17 +14,17 @@ import com.fdn.course.monitoring.repository.UserCourseProgressRepository;
 import com.fdn.course.monitoring.repository.UserRepository;
 import com.fdn.course.monitoring.security.JwtUtility;
 import com.fdn.course.monitoring.util.Status;
+import com.fdn.course.monitoring.util.TransformPagination;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -42,6 +43,9 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private TransformPagination transformPagination;
 
     @Override
     public ResponseEntity<Object> save(MapUserDetailCourse mapUserDetailCourse, HttpServletRequest request) {
@@ -67,7 +71,16 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
 
     @Override
     public ResponseEntity<Object> findAll(Pageable pageable, HttpServletRequest request) {
-        return null;
+        Page<MapUserDetailCourse> page = null;
+        List<MapUserDetailCourse> list = null;
+
+        page = mapUserDetailCourseRepository.findAll(pageable);
+        list = page.getContent();
+
+        List<RespMapUserDetailCourseDTO> responseList = convertToRespMapUserDetailCourseDTO(list);
+
+        return GlobalResponse.dataDitemukan(transformPagination.transformPagination(responseList,page,null,null),request);
+
     }
 
     @Override
@@ -132,5 +145,22 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
         mapUserDetailCourse.setSummary(mapUserDetailCourseDTO.getSummary());
 
         return mapUserDetailCourse;
+    }
+
+    public List<RespMapUserDetailCourseDTO> convertToRespMapUserDetailCourseDTO(List<MapUserDetailCourse> mapUserDetailCourses) {
+        List<RespMapUserDetailCourseDTO> responseListDTO = new ArrayList<>();
+        for (MapUserDetailCourse mapUserDetailCourse : mapUserDetailCourses) {
+
+            RespMapUserDetailCourseDTO respDTO = new RespMapUserDetailCourseDTO();
+            respDTO.setId(mapUserDetailCourse.getId());
+            respDTO.setUsername(mapUserDetailCourse.getUser().getUsername());
+            respDTO.setNamaCourse(mapUserDetailCourse.getDetailCourse().getCourse().getNama());
+            respDTO.setJudulDetailCourse(mapUserDetailCourse.getDetailCourse().getJudul());
+            respDTO.setSummary(mapUserDetailCourse.getSummary());
+            respDTO.setStatus(mapUserDetailCourse.getStatus().name());
+
+            responseListDTO.add(respDTO);
+        }
+        return responseListDTO;
     }
 }

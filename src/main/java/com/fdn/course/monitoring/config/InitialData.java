@@ -1,9 +1,11 @@
 package com.fdn.course.monitoring.config;
 
 import com.fdn.course.monitoring.model.Access;
+import com.fdn.course.monitoring.model.GroupMenu;
 import com.fdn.course.monitoring.model.Menu;
 import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.repository.AccessRepository;
+import com.fdn.course.monitoring.repository.GroupMenuRepository;
 import com.fdn.course.monitoring.repository.MenuRepository;
 import com.fdn.course.monitoring.repository.UserRepository;
 import com.fdn.course.monitoring.security.BcryptImpl;
@@ -18,30 +20,45 @@ import java.util.Optional;
 @Component
 public class InitialData implements CommandLineRunner {
     private final MenuRepository menuRepository;
+    private final GroupMenuRepository groupMenuRepository;
     private final AccessRepository accessRepository;
     private final UserRepository userRepository;
 
-    public InitialData(MenuRepository menuRepository, AccessRepository accessRepository, UserRepository userRepository) {
+    public InitialData(GroupMenuRepository groupMenuRepository, MenuRepository menuRepository, AccessRepository accessRepository, UserRepository userRepository) {
         this.menuRepository = menuRepository;
         this.accessRepository = accessRepository;
         this.userRepository = userRepository;
+        this.groupMenuRepository = groupMenuRepository;
     }
 
     @Override
     @Transactional
     public void run(String... args) {
+        if (groupMenuRepository.count() > 0) {
+            System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
+            return;
+        }
+
+        List<GroupMenu> groupMenus = List.of(
+                new GroupMenu("Admin", "untuk keperluan manajemen akun user"),
+                new GroupMenu("Kursus", "untuk menu-menu terkait kursus"),
+                new GroupMenu("Report", "untuk menu-menu dashboard dan print laporan"),
+                new GroupMenu("Pengguna", "untuk menu-menu pengguna")
+        );
+        groupMenuRepository.saveAll(groupMenus);
+
         if (menuRepository.count() > 0 ) {
             System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
             return;
         }
 
         List<Menu> menus = List.of(
-                new Menu("Dashboard-admin", "/dashboard-admin", LocalDateTime.now()),
-                new Menu("Dashboard", "/dashboard", LocalDateTime.now()),
-                new Menu("Manajemen Pengguna", "/users", LocalDateTime.now()),
-                new Menu("Manajemen Akses", "/access", LocalDateTime.now()),
-                new Menu("Daftar Pengguna", "/user-list", LocalDateTime.now()),
-                new Menu("Daftar Kursus", "/courses", LocalDateTime.now())
+                new Menu("Dashboard-admin", groupMenus.getFirst(), "/dashboard-admin", LocalDateTime.now()),
+                new Menu("Dashboard", groupMenus.get(3),"/dashboard",  LocalDateTime.now()),
+                new Menu("Manajemen Pengguna", groupMenus.getFirst(), "/users", LocalDateTime.now()),
+                new Menu("Manajemen Akses",  groupMenus.getFirst(),  "/access", LocalDateTime.now()),
+                new Menu("Daftar Pengguna",groupMenus.get(3), "/user-list", LocalDateTime.now()),
+                new Menu("Daftar Kursus",groupMenus.get(3), "/courses", LocalDateTime.now())
         );
         menuRepository.saveAll(menus);
 

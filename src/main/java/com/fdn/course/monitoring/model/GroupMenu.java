@@ -1,10 +1,7 @@
 package com.fdn.course.monitoring.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,30 +12,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "MstMenu")
-public class Menu {
-    public Menu(String nama, GroupMenu groupMenu, String path, LocalDateTime createdDate) {
-        this.nama = nama;
-        this.groupMenu = groupMenu;
-        this.path = path;
-        this.createdDate = createdDate;
-    }
+@Table(name = "MstGroupMenu")
+public class GroupMenu {
 
+    public GroupMenu(String nama, String deskripsi) {
+        this.nama = nama;
+        this.deskripsi = deskripsi;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdMenu")
+    @Column(name = "IDGroup")
     private Long id;
 
-    @Column(name = "NamaMenu", nullable = false, length = 20, unique = true)
+
+    @Column(name = "Nama", nullable = false, length = 50, unique = true)
     private String nama;
 
-    @Column(name = "Path", nullable = false, length = 20)
-    private String path;
-
-    @ManyToOne
-    @JoinColumn(name = "IdGroupMenu", foreignKey = @ForeignKey(name = "fk-to-groupmenu"))
-    private GroupMenu groupMenu;
+    @Column(name = "Deskripsi", nullable = false, length = 100, unique = true)
+    private String deskripsi;
 
     @Column(name = "CreatedBy", nullable = false, updatable = false)
     private Long createdBy = 1L;
@@ -48,11 +40,9 @@ public class Menu {
     private LocalDateTime createdDate;
 
     @Column(name = "ModifiedBy", insertable = false)
-    private Long modifiedBy = 1L;
+    private Long modifiedBy = -1L;
 
     @Column(name = "ModifiedDate", insertable = false)
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
-
-
 }
