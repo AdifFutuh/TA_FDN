@@ -21,7 +21,7 @@ public class UserController {
 
     //untuk mengambil semua list peserta
     @GetMapping("user-list")
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object>findAllAsAdmin(HttpServletRequest request){
         Pageable pageable = PageRequest.of(0,20, Sort.by("id"));
         return userService.findAll(pageable,request);
@@ -29,7 +29,7 @@ public class UserController {
 
     //Mencari data user
     @GetMapping("/{sort}/{sortBy}/{page}")
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> findByParamsAsAdmin(
             @PathVariable(value = "sort") String sort,
             @PathVariable(value = "sortBy") String sortBy,
@@ -51,7 +51,7 @@ public class UserController {
     }
     //Menghapus data user
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> delete(
             @PathVariable(value = "id") Long id, HttpServletRequest request){
         return userService.delete(id,request);

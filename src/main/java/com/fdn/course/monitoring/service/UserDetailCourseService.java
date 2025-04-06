@@ -2,15 +2,14 @@ package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.core.IService;
 import com.fdn.course.monitoring.dto.response.RespMapUserDetailCourseDTO;
-import com.fdn.course.monitoring.dto.response.RespUserDTO;
 import com.fdn.course.monitoring.dto.validation.ValMapUserDetailCourseDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
 import com.fdn.course.monitoring.model.DetailCourse;
-import com.fdn.course.monitoring.model.MapUserDetailCourse;
+import com.fdn.course.monitoring.model.UserDetailCourse;
 import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.model.UserCourseProgress;
 import com.fdn.course.monitoring.repository.DetailCourseRepository;
-import com.fdn.course.monitoring.repository.MapUserDetailCourseRepository;
+import com.fdn.course.monitoring.repository.UserDetailCourseRepository;
 import com.fdn.course.monitoring.repository.UserCourseProgressRepository;
 import com.fdn.course.monitoring.repository.UserRepository;
 import com.fdn.course.monitoring.security.JwtUtility;
@@ -29,9 +28,9 @@ import java.util.*;
 
 @Service
 @Transactional
-public class MapUserDetailCourseService implements IService<MapUserDetailCourse> {
+public class UserDetailCourseService implements IService<UserDetailCourse> {
     @Autowired
-    private MapUserDetailCourseRepository mapUserDetailCourseRepository;
+    private UserDetailCourseRepository userDetailCourseRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,19 +48,19 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
     private TransformPagination transformPagination;
 
     @Override
-    public ResponseEntity<Object> save(MapUserDetailCourse mapUserDetailCourse, HttpServletRequest request) {
-        if (mapUserDetailCourseRepository.existsByUserAndDetailCourse(
+    public ResponseEntity<Object> save(UserDetailCourse mapUserDetailCourse, HttpServletRequest request) {
+        if (userDetailCourseRepository.existsByUserAndDetailCourse(
                 mapUserDetailCourse.getUser(), mapUserDetailCourse.getDetailCourse())
         ){
             return GlobalResponse.dataGagalDisimpan("",request);
         }
         mapUserDetailCourse.setStatus(Status.PENDING);
-        mapUserDetailCourseRepository.save(mapUserDetailCourse);
+        userDetailCourseRepository.save(mapUserDetailCourse);
         return GlobalResponse.dataBerhasilDisimpan(request);
     }
 
     @Override
-    public ResponseEntity<Object> update(Long id, MapUserDetailCourse mapUserDetailCourseService, HttpServletRequest request) {
+    public ResponseEntity<Object> update(Long id, UserDetailCourse mapUserDetailCourseService, HttpServletRequest request) {
         return null;
     }
 
@@ -72,10 +71,10 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
 
     @Override
     public ResponseEntity<Object> findAll(Pageable pageable, HttpServletRequest request) {
-            Page<MapUserDetailCourse> page = null;
-            List<MapUserDetailCourse> list = null;
+            Page<UserDetailCourse> page = null;
+            List<UserDetailCourse> list = null;
 
-            page = mapUserDetailCourseRepository.findAll(pageable);
+            page = userDetailCourseRepository.findAll(pageable);
             list = page.getContent();
 
             List<RespMapUserDetailCourseDTO> responseList = convertToRespMapUserDetailCourseDTO(list);
@@ -86,13 +85,13 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
 
     @Override
     public ResponseEntity<Object> findById(Long id, HttpServletRequest request) {
-        Optional<MapUserDetailCourse> mapUserDetailCourseOptional = Optional.empty();
+        Optional<UserDetailCourse> mapUserDetailCourseOptional = Optional.empty();
         try{
-            mapUserDetailCourseOptional = mapUserDetailCourseRepository.findById(id);
+            mapUserDetailCourseOptional = userDetailCourseRepository.findById(id);
             if (mapUserDetailCourseOptional.isEmpty()){
                 return GlobalResponse.dataTidakDitemukan("",request);
             }
-            MapUserDetailCourse mapUserDetailCourse = mapUserDetailCourseOptional.get();
+            UserDetailCourse mapUserDetailCourse = mapUserDetailCourseOptional.get();
 
             RespMapUserDetailCourseDTO respDTO = new RespMapUserDetailCourseDTO();
             respDTO.setUsername(mapUserDetailCourse.getUser().getUsername());
@@ -115,18 +114,18 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
 
     public ResponseEntity<Object> approveSummary(long id, HttpServletRequest request){
         Map<String, Object> mapToken = JwtUtility.extractToken(request);
-        Optional<MapUserDetailCourse> mapUserDetailCourseOptional = mapUserDetailCourseRepository.findById(id);
+        Optional<UserDetailCourse> mapUserDetailCourseOptional = userDetailCourseRepository.findById(id);
 
         if (mapUserDetailCourseOptional.isEmpty()){
             return GlobalResponse.dataTidakDitemukan("", request);
         }
 
-        MapUserDetailCourse mapUserDetailCourse = mapUserDetailCourseOptional.get();
+        UserDetailCourse mapUserDetailCourse = mapUserDetailCourseOptional.get();
 
         mapUserDetailCourse.setStatus(Status.APPROVED);
         mapUserDetailCourse.setApprovedAt(new Date());
         mapUserDetailCourse.setApprovedBy(Long.valueOf(mapToken.get("userId").toString()));
-        mapUserDetailCourseRepository.save(mapUserDetailCourse);
+        userDetailCourseRepository.save(mapUserDetailCourse);
 
         Optional<UserCourseProgress> userCourseProgressOptional = userCourseProgressRepository.findByUserAndCourse(
                 mapUserDetailCourse.getUser(), mapUserDetailCourse.getDetailCourse().getCourse()
@@ -139,7 +138,7 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
             long totalDetailCourse = detailCourseRepository.countByCourse(userCourseProgress.getCourse());
 
             // Hitung berapa yang sudah APPROVED
-            long completedDetailCourse = mapUserDetailCourseRepository.countByUserAndStatusAndDetailCourse_Course(
+            long completedDetailCourse = userDetailCourseRepository.countByUserAndStatusAndDetailCourse_Course(
                     userCourseProgress.getUser(),
                     Status.APPROVED,
                     userCourseProgress.getCourse()
@@ -155,8 +154,8 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
 
         return GlobalResponse.dataBerhasilDiubah(request);
     }
-    public MapUserDetailCourse convertDtoToEntity(ValMapUserDetailCourseDTO mapUserDetailCourseDTO){
-        MapUserDetailCourse mapUserDetailCourse = new MapUserDetailCourse();
+    public UserDetailCourse convertDtoToEntity(ValMapUserDetailCourseDTO mapUserDetailCourseDTO){
+        UserDetailCourse mapUserDetailCourse = new UserDetailCourse();
         User user = userRepository.getReferenceById(mapUserDetailCourseDTO.getUser().getId());
         DetailCourse detailCourse = detailCourseRepository.getReferenceById(mapUserDetailCourseDTO.getDetailCourse().getId());
 
@@ -167,9 +166,9 @@ public class MapUserDetailCourseService implements IService<MapUserDetailCourse>
         return mapUserDetailCourse;
     }
 
-    public List<RespMapUserDetailCourseDTO> convertToRespMapUserDetailCourseDTO(List<MapUserDetailCourse> mapUserDetailCourses) {
+    public List<RespMapUserDetailCourseDTO> convertToRespMapUserDetailCourseDTO(List<UserDetailCourse> mapUserDetailCourses) {
         List<RespMapUserDetailCourseDTO> responseListDTO = new ArrayList<>();
-        for (MapUserDetailCourse mapUserDetailCourse : mapUserDetailCourses) {
+        for (UserDetailCourse mapUserDetailCourse : mapUserDetailCourses) {
 
             RespMapUserDetailCourseDTO respDTO = new RespMapUserDetailCourseDTO();
             respDTO.setId(mapUserDetailCourse.getId());

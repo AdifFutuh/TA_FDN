@@ -7,8 +7,7 @@ import com.fdn.course.monitoring.dto.validation.ValDetailCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValMapUserDetailCourseDTO;
 import com.fdn.course.monitoring.service.CourseService;
 import com.fdn.course.monitoring.service.DetailCourseService;
-import com.fdn.course.monitoring.service.MapUserDetailCourseService;
-import com.fdn.course.monitoring.service.UserCourseProdressService;
+import com.fdn.course.monitoring.service.UserDetailCourseService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class CourseController {
     private DetailCourseService detailCourseService;
 
     @Autowired
-    private MapUserDetailCourseService mapUserDetailCourseService;
+    private UserDetailCourseService userDetailCourseService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('Dashboard-admin')")
@@ -42,7 +41,7 @@ public class CourseController {
     }
 
     @PostMapping("/detail")
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> addDetailCourse(
             @Valid @RequestBody ValDetailCourseDTO detailCourseDTO,
             HttpServletRequest request
@@ -62,13 +61,13 @@ public class CourseController {
         RefDetailCourseDTO detailCourseDTO = new RefDetailCourseDTO(idDetailCourse);
         mapUserDetailCourseDTO.setUser(refUserDTO);
         mapUserDetailCourseDTO.setDetailCourse(detailCourseDTO);
-        return mapUserDetailCourseService.save(mapUserDetailCourseService.convertDtoToEntity(mapUserDetailCourseDTO), request);
+        return userDetailCourseService.save(userDetailCourseService.convertDtoToEntity(mapUserDetailCourseDTO), request);
     }
 
     @GetMapping("/all-summary")
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> findAllMapUserDetailCourseInfo(HttpServletRequest request){
         Pageable pageable = PageRequest.of(0,20, Sort.by("id"));
-        return mapUserDetailCourseService.findAll(pageable,request);
+        return userDetailCourseService.findAll(pageable,request);
     }
 }

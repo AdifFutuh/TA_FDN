@@ -78,16 +78,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
             otpRepository.save(otp);
             map.put("message", "User registered successfully, OTP sent");
+
+            SendMailOTP.verifyRegisOTP(
+                    "VERIFIKASI OTP REGISTERASI",
+                    user.getNama(),
+                    user.getEmail(),
+                    String.valueOf(intOtp)
+            );
         }else {
             map.put("message", "Username already exists");
         }
-
-        SendMailOTP.verifyRegisOTP(
-                "VERIFIKASI OTP REGISTERASI",
-                user.getNama(),
-                user.getEmail(),
-                String.valueOf(intOtp)
-        );
 
         return ResponseEntity.ok(map);
     }

@@ -1,7 +1,7 @@
 package com.fdn.course.monitoring.controller;
 
 import com.fdn.course.monitoring.dto.validation.ValUserCourseProgressDTO;
-import com.fdn.course.monitoring.service.MapUserDetailCourseService;
+import com.fdn.course.monitoring.service.UserDetailCourseService;
 import com.fdn.course.monitoring.service.UserCourseProdressService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ public class UserCourseProgressController {
     private UserCourseProdressService userCourseProdressService;
 
     @Autowired
-    private MapUserDetailCourseService mapUserDetailCourseService;
+    private UserDetailCourseService userDetailCourseService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> addUserCourse(
             @RequestBody ValUserCourseProgressDTO userCourseProgressDTO,
             HttpServletRequest request
@@ -28,12 +28,12 @@ public class UserCourseProgressController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> approveSummary(
             @PathVariable(value = "id") Long id,
             HttpServletRequest request
     ){
-        return mapUserDetailCourseService.approveSummary(id,request);
+        return userDetailCourseService.approveSummary(id,request);
     }
 
 }

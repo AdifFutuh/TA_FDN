@@ -1,12 +1,8 @@
 package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.core.IService;
-import com.fdn.course.monitoring.dto.validation.ValDetailCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValUserCourseProgressDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
-import com.fdn.course.monitoring.model.Course;
-import com.fdn.course.monitoring.model.DetailCourse;
-import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.model.UserCourseProgress;
 import com.fdn.course.monitoring.repository.*;
 import com.fdn.course.monitoring.security.JwtUtility;
@@ -37,7 +33,7 @@ public class UserCourseProdressService implements IService<UserCourseProgress> {
     private DetailCourseRepository detailCourseRepository;
 
     @Autowired
-    private MapUserDetailCourseRepository mapUserDetailCourseRepository;
+    private UserDetailCourseRepository userDetailCourseRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -80,7 +76,7 @@ public class UserCourseProdressService implements IService<UserCourseProgress> {
             Long totalDetailCourse = detailCourseRepository.countByCourse(userCourseProgressNext.getCourse());
 
             // Menghitung jumlah detail course yang sudah diambil oleh user
-            Long completedDetailCourse = mapUserDetailCourseRepository.countByUserAndStatusAndDetailCourse_Course(
+            Long completedDetailCourse = userDetailCourseRepository.countByUserAndStatusAndDetailCourse_Course(
                     userCourseProgressNext.getUser(),
                     Status.APPROVED,
                     userCourseProgressNext.getCourse()

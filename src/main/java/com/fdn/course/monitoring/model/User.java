@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -82,12 +81,13 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<Menu> listMenu = this.akses.getLtMenu();
 
+        for (Menu menu : listMenu){
+            System.out.println(menu.getNama());
+        }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         for (Menu menu : listMenu){
             grantedAuthorities.add(new SimpleGrantedAuthority(menu.getNama()));
         }
         return grantedAuthorities;
     }
-
-
 }

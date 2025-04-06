@@ -17,10 +17,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "MstMenu")
 public class Menu {
-    public Menu(String nama, String path, LocalDateTime createdDate) {
+    public Menu(String nama,GroupMenu groupMenu, String path, LocalDateTime createdDate) {
         this.nama = nama;
         this.path = path;
         this.createdDate = createdDate;
+        this.groupMenu = groupMenu;
     }
 
     @Id
@@ -33,6 +34,10 @@ public class Menu {
 
     @Column(name = "Path", nullable = false, length = 20)
     private String path;
+
+    @ManyToOne
+    @JoinColumn(name = "IDGroupMenu", foreignKey = @ForeignKey(name = "fk-to-groupmenu"))
+    private GroupMenu groupMenu;
 
     @Column(name = "CreatedBy", nullable = false, updatable = false)
     private Long createdBy = 1L;
@@ -47,6 +52,4 @@ public class Menu {
     @Column(name = "ModifiedDate", insertable = false)
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
-
-
 }
