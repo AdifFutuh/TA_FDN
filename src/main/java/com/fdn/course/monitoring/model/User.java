@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -88,6 +87,4 @@ public class User implements UserDetails {
         }
         return grantedAuthorities;
     }
-
-
 }

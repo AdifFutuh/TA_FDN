@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "MapUserDetailCourse",uniqueConstraints = @UniqueConstraint(name = "unq-user-to-detailcourse", columnNames = {"IdUser", "IdDetailCourse"}))
-public class MapUserDetailCourse {
+public class UserDetailCourse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

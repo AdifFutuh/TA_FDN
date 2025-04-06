@@ -7,7 +7,6 @@ import com.fdn.course.monitoring.handler.GlobalResponse;
 import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.repository.UserRepository;
 import com.fdn.course.monitoring.security.JwtUtility;
-import com.fdn.course.monitoring.util.LoggingFile;
 import com.fdn.course.monitoring.util.TransformPagination;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
