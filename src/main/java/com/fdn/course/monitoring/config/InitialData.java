@@ -50,6 +50,38 @@ public class InitialData implements CommandLineRunner {
 
         if (menuRepository.count() == 0) {
             List<GroupMenu> groupMenus = groupMenuRepository.findAll();
+=======
+
+        if (groupMenuRepository.count() > 0 ) {
+            System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
+            return;
+        }
+
+        List<GroupMenu> groupMenus = List.of(
+                new GroupMenu("Admin","untuk keperluan manajemen akun user"),
+                new GroupMenu("Kursus", "untuk menu-menu terkait kursus"),
+                new GroupMenu("Report","untuk menu-menu dashboard dan print laporan"),
+                new GroupMenu("Pengguna", "untuk menu-menu pengguna")
+        );
+
+        groupMenuRepository.saveAll(groupMenus);
+
+        if (menuRepository.count() > 0 ) {
+            System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
+            return;
+        }
+
+        List<Menu> menus = List.of(
+                new Menu("Dashboard Admin", groupMenus.getFirst(), "/dashboard-admin", LocalDateTime.now()),
+                new Menu("menu", groupMenus.getFirst(), "/menu", LocalDateTime.now()),
+                new Menu("Dashboard", groupMenus.get(2),"/dashboard", LocalDateTime.now()),
+                new Menu("Manajemen Pengguna", groupMenus.getFirst(),"/users", LocalDateTime.now()),
+                new Menu("Manajemen Akses", groupMenus.getFirst(), "/access", LocalDateTime.now()),
+                new Menu("Daftar Pengguna", groupMenus.get(3), "/user-list", LocalDateTime.now()),
+                new Menu("Daftar Kursus", groupMenus.get(1), "/courses", LocalDateTime.now())
+        );
+        menuRepository.saveAll(menus);
+>>>>>>> a183fd151ffdc48cba8c0f26ffc9239e9fa0fde1
 
             GroupMenu adminGroup = groupMenus.stream()
                     .filter(g -> g.getNama().equals("Admin"))
@@ -79,8 +111,26 @@ public class InitialData implements CommandLineRunner {
             System.out.println("⚡ Menu sudah ada, tidak perlu insert ulang.");
         }
 
+<<<<<<< HEAD
         if (accessRepository.count() == 0) {
             List<Menu> allMenus = menuRepository.findAll();
+=======
+        List<Menu> allMenus = menuRepository.findAll();
+        List<Access> accesses = List.of(
+                new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), allMenus),
+                new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(), allMenus),
+                new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(),
+                        List.of(
+                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Dashboard")).findFirst().orElse(null)),
+                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Manajemen Pengguna")).findFirst().orElse(null)),
+                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Daftar Pengguna")).findFirst().orElse(null)),
+                                Objects.requireNonNull(allMenus.stream().filter(menu -> menu.getNama().equals("Daftar Kursus")).findFirst().orElse(null))
+                        )
+                )
+        );
+
+        accessRepository.saveAll(accesses);
+>>>>>>> a183fd151ffdc48cba8c0f26ffc9239e9fa0fde1
 
             Access superAdminAccess = new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), allMenus);
             Access adminAccess = new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(), allMenus);
