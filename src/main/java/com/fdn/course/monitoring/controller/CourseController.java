@@ -32,7 +32,7 @@ public class CourseController {
     private UserDetailCourseService userDetailCourseService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('Dashboard-admin')")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> addCourse(
             @Valid @RequestBody ValCourseDTO courseDTO,
             HttpServletRequest request

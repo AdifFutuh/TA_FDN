@@ -1,6 +1,7 @@
 package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.config.JwtConfig;
+import com.fdn.course.monitoring.dto.response.MenuLoginDTO;
 import com.fdn.course.monitoring.dto.validation.ValLoginDTO;
 import com.fdn.course.monitoring.dto.validation.ValUserDTO;
 import com.fdn.course.monitoring.dto.validation.ValVerifyRegisDTO;
@@ -13,9 +14,11 @@ import com.fdn.course.monitoring.security.BcryptImpl;
 import com.fdn.course.monitoring.security.Crypto;
 import com.fdn.course.monitoring.security.JwtUtility;
 import com.fdn.course.monitoring.util.SendMailOTP;
+import com.fdn.course.monitoring.util.TransformationDataManual;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,10 +27,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @Transactional
@@ -178,8 +178,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (JwtConfig.getTokenEncryptEnable().equals("y")){
             token = Crypto.performEncrypt(token);
         }
+        List<MenuLoginDTO> ltMenu = modelMapper.map(userNext.getAkses().getLtMenu(), new TypeToken<List<MenuLoginDTO>>(){}.getType());
+
         Map<String,Object> response = new HashMap<>();
         response.put("token", token);
+        response.put("menu",new TransformationDataManual().doTransformAksesMenuLogin(ltMenu));
+
         return GlobalResponse.loginBerhasil(response, request);
     }
 
