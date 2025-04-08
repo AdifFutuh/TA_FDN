@@ -62,15 +62,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public ResponseEntity<Object> regis(User user, HttpServletRequest request) {
-        Optional<User> userOptional = userRepository.findByUsername(user.getUsername());
+
+
+        Optional<User> userOptional = userRepository.findByUsernameOrEmailOrNoHp(user.getUsername(), user.getEmail(), user.getNoHp());
         Map<String, Object> map = new HashMap<>();
 
         int intOtp = 0;
+        if (userOptional.isPresent()){
+            User userNext = userOptional.get();
+            if (userNext.getIsRegistered()){
+                return GlobalResponse.dataSudahTerdaftar("authFVReg001",request);
+            } else if (userRepository.existsByUsername(userNext.getUsername())) {
+                return GlobalResponse.dataSudahTerdaftar("authFVReg002",request);
+            } else if (userRepository.existsByEmail(userNext.getEmail())) {
+                return GlobalResponse.dataSudahTerdaftar("authFVReg003",request);
+            } else {
+                return GlobalResponse.dataSudahTerdaftar("authFVReg004",request);
+            }
 
-        if (userOptional.isEmpty()) {
+        }else {
             user.setPassword(BcryptImpl.hash(user.getUsername() + user.getPassword()));
             intOtp = random.nextInt(111111, 999999);
             User userSaved = userRepository.save(user);
+
             Otp otp = new Otp();
             otp.setUser(userSaved);
             otp.setOtp(BcryptImpl.hash(String.valueOf(intOtp)));
@@ -85,11 +99,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     user.getEmail(),
                     String.valueOf(intOtp)
             );
-        }else {
-            map.put("message", "Username already exists");
-        }
+            return ResponseEntity.ok(map);
 
-        return ResponseEntity.ok(map);
+        }
     }
 
     public ResponseEntity<Object> verifyRegis(User user, HttpServletRequest request) {

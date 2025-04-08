@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +85,7 @@ public class InitialData implements CommandLineRunner {
             superAdmin.setNoHp("0000000000");
             superAdmin.setAlamat("alamat super admin dimana-mana");
             superAdmin.setIsRegistered(true);
+            superAdmin.setTanggalLahir(LocalDate.now());
             superAdmin.setPassword(BcryptImpl.hash(superAdmin.getUsername() + "superman"));
 
             accessRepository.findBynama("Super Admin")

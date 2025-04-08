@@ -48,27 +48,35 @@ public class Crypto {
         return performDecrypt(defaultKey, cryptoText);
     }
 
-    public static void main(String[] args) {
-        String strToEncrypt = "hplz tbpm jike afvh";
-        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
-
-        strToEncrypt = "futuhadif@gmail.com";
-        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
-
-
-
-        strToEncrypt = "jdbc:sqlserver://localhost:1433;databaseName=fdn;encrypt=true;trustServerCertificate=true";
-        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
-//
-//        strToEncrypt = "Futuh354";
+//    public static void main(String[] args) {
+//        String strToEncrypt = "hplz tbpm jike afvh";
 //        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
-
-        String strToDecrypt = "97f2ec5483f8591345dd492c4aa08665";
-        System.out.println("Decryption Result : " + performDecrypt(strToDecrypt));
-
-        strToDecrypt = "d9f7d9bf650bec5dfdb88a0ba35bc7d8";
-        System.out.println("Decryption Result : " + performDecrypt(strToDecrypt));
-
-
+//
+//        strToEncrypt = "futuhadif@gmail.com";
+//        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
+//
+//
+//
+//        strToEncrypt = "jdbc:sqlserver://localhost:1433;databaseName=fdn;encrypt=true;trustServerCertificate=true";
+//        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
+////
+////        strToEncrypt = "Futuh354";
+////        System.out.println("Encryption Result : " + performEncrypt(strToEncrypt));
+//
+//        String strToDecrypt = "97f2ec5483f8591345dd492c4aa08665";
+//        System.out.println("Decryption Result : " + performDecrypt(strToDecrypt));
+//
+//        strToDecrypt = "d9f7d9bf650bec5dfdb88a0ba35bc7d8";
+//        System.out.println("Decryption Result : " + performDecrypt(strToDecrypt));
+//
+//
+//    }
+    public static void main(String[] args) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < i; j++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
     }
 }

@@ -38,10 +38,10 @@ public class UserService implements IService<User> {
     private ModelMapper modelMapper;
 
     @Override
+    @Deprecated
     public ResponseEntity<Object> save(User user, HttpServletRequest request) {
-        return null;
+        throw new UnsupportedOperationException("Method ini tidak digunakan. Gunakan UserDetailsServiceImpl untuk menyimpan User.");
     }
-
     @Override
     public ResponseEntity<Object> update(Long id, User user, HttpServletRequest request) {
         Map<String,Object> mapToken = JwtUtility.extractToken(request);
@@ -82,18 +82,30 @@ public class UserService implements IService<User> {
         }
     }
 
-    @Override
     public ResponseEntity<Object> findAll(Pageable pageable, HttpServletRequest request) {
-        Page<User> page = null;
-        List<User> list = null;
+        try {
+            Page<User> page = userRepository.findAll(pageable);
+            List<User> list = page.getContent();
 
-        page = userRepository.findAll(pageable);
-        list = page.getContent();
+            List<RespUserDTO> responseList = convertToRespUsersDTO(list);
 
-        List<RespUserDTO> responseList = convertToRespUsersDTO(list);
+            return GlobalResponse.dataDitemukan(
+                    transformPagination.transformPagination(responseList, page, null, null),
+                    request
+            );
 
-        return GlobalResponse.dataDitemukan(transformPagination.transformPagination(responseList,page,null,null),request);
+        } catch (Exception e) {
+            // Log error ke konsol atau sistem logging
+            e.printStackTrace();
+
+            // Kamu bisa membuat GlobalResponse.error / gagalDitemukan() sesuai dengan konvensimu
+            return GlobalResponse.terjadiKesalahan(
+                    "",
+                    request
+            );
+        }
     }
+
 
     @Override
     public ResponseEntity<Object> findById(Long id, HttpServletRequest request) {

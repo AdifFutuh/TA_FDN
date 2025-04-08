@@ -45,6 +45,5 @@ public class ValUserDTO {
     @Pattern(regexp = "^[a-zA-Z\\s]{4,25}$", message = "Hanya Alfabet dan spasi Minimal 4 Maksimal 25")
     private String nama;
 
-    @JsonProperty("akss")
     private RefAccessDTO akses;
 }

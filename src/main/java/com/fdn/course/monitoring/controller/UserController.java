@@ -20,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     //untuk mengambil semua list peserta
-    @GetMapping("user-list")
+    @GetMapping("/user-list")
     @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object>findAllAsAdmin(HttpServletRequest request){
         Pageable pageable = PageRequest.of(0,20, Sort.by("id"));
