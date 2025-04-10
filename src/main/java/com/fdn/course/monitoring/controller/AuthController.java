@@ -33,11 +33,11 @@ public class AuthController {
     }
 
     @PostMapping("/resend-otp")
-    public ResponseEntity<Object> resendOtp(@RequestBody Map<String, String> requestBody,
+    public ResponseEntity<Object> resendOtp(@RequestParam("email") String email,
                                             HttpServletRequest request){
-        String email = requestBody.get("email");
-       return userDetailsService.resendOtp(email, request);
+        return userDetailsService.resendOtp(email, request);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody ValLoginDTO valLoginDTO,

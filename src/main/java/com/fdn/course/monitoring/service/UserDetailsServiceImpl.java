@@ -99,7 +99,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     user.getEmail(),
                     String.valueOf(intOtp)
             );
-            return ResponseEntity.ok(map);
+            return GlobalResponse.dataBerhasilDisimpan(request);
 
         }
     }
@@ -108,21 +108,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
 
         if (userOptional.isEmpty()){
-            return GlobalResponse.dataTidakDitemukan("",request);
+            return GlobalResponse.dataTidakDitemukan("authFVOtp00",request);
         }
         User userNext = userOptional.get();
         Otp otp = userNext.getOtp();
 
         if (otp == null) {
-            return GlobalResponse.dataTidakValid("", request);
+            return GlobalResponse.dataTidakValid("authFVOtp01", request);
         }
 
         if (LocalDateTime.now().isAfter(otp.getExpiredTime())) {
-            return GlobalResponse.dataTidakValid("", request);
+            return GlobalResponse.dataTidakValid("authFVOtp02", request);
         }
 
         if (!BcryptImpl.verifyHash(user.getOtp().getOtp(), otp.getOtp())) {
-            return GlobalResponse.dataTidakValid("", request);
+            return GlobalResponse.dataTidakValid("authFVOtp03", request);
         }
 
         userNext.setIsRegistered(true);

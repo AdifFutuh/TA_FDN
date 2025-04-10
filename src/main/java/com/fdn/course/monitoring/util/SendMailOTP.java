@@ -19,7 +19,6 @@ public class SendMailOTP {
                 strContent = strContent.replace("yyttccvj",strVerify[0]);//Kepentingan
                 strContent = strContent.replace("tkeno",strVerify[1]);//Nama Lengkap
                 final String content = strContent;
-                System.out.println(SMTPConfig.getEmailHost());
                 String [] strEmail = {email};
                 String [] strImage = null;
                 SMTPCore sc = new SMTPCore();
@@ -33,7 +32,6 @@ public class SendMailOTP {
                     }
                 });
                 t.start();
-                System.out.println("mengirim otp");
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }

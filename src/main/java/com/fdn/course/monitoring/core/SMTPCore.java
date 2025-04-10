@@ -82,7 +82,6 @@ public class SMTPCore {
             );
 
         try{
-            System.out.println("masuk");
             message = new MimeMessage(session);
             message.setFrom(new InternetAddress(SMTPConfig.getEmailUserName()));
             message.setRecipients(
@@ -112,7 +111,6 @@ public class SMTPCore {
             message.setContent(multipart);
 
             Transport.send(message);
-            System.out.println("kekirim");
         }catch (Exception e){
             LoggingFile.logException("SMTPCore","sendMailWithAttachment",e, "y");
             System.out.println(e.getMessage());
