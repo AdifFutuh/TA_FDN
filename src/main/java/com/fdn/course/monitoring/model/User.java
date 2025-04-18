@@ -73,9 +73,9 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime modifiedDate;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "IdOtp")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = false)
     private Otp otp;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

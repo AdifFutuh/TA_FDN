@@ -2,7 +2,7 @@ package com.fdn.course.monitoring.controller;
 
 import com.fdn.course.monitoring.dto.validation.ValUserCourseProgressDTO;
 import com.fdn.course.monitoring.service.UserDetailCourseService;
-import com.fdn.course.monitoring.service.UserCourseProdressService;
+import com.fdn.course.monitoring.service.UserCourseProgressService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user-course")
 public class UserCourseProgressController {
     @Autowired
-    private UserCourseProdressService userCourseProdressService;
+    private UserCourseProgressService userCourseProgressService;
 
     @Autowired
     private UserDetailCourseService userDetailCourseService;
@@ -24,7 +24,7 @@ public class UserCourseProgressController {
             @RequestBody ValUserCourseProgressDTO userCourseProgressDTO,
             HttpServletRequest request
     ){
-        return userCourseProdressService.save(userCourseProdressService.convertDtoToEntity(userCourseProgressDTO),request);
+        return userCourseProgressService.save(userCourseProgressService.convertDtoToEntity(userCourseProgressDTO),request);
     }
 
     @GetMapping("/{id}")

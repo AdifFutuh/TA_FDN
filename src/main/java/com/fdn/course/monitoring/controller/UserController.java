@@ -30,7 +30,7 @@ public class UserController {
     //Mencari data user
     @GetMapping("/{sort}/{sortBy}/{page}")
     @PreAuthorize("hasAuthority('Dashboard Admin')")
-    public ResponseEntity<Object> findByParamsAsAdmin(
+    public ResponseEntity<Object> findAllByParam(
             @PathVariable(value = "sort") String sort,
             @PathVariable(value = "sortBy") String sortBy,
             @PathVariable(value = "page") Integer page,
@@ -49,6 +49,29 @@ public class UserController {
 
         return userService.findByParam(pageable,column,value,request);
     }
+
+    @GetMapping("/list-peserta/{sort}/{sortBy}/{page}")
+    @PreAuthorize("hasAuthority('Daftar Pengguna')")
+    public ResponseEntity<Object> findPesertaByParam(
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            HttpServletRequest request
+    ) {
+        Pageable pageable = null;
+        sortBy = sortColumnByMap(sortBy);
+        if (sort.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        }
+
+        return userService.findByParam(pageable,column,value,request);
+    }
+
     //Menghapus data user
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('Dashboard Admin')")

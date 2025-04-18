@@ -42,17 +42,18 @@ public class UserService implements IService<User> {
     public ResponseEntity<Object> save(User user, HttpServletRequest request) {
         throw new UnsupportedOperationException("Method ini tidak digunakan. Gunakan UserDetailsServiceImpl untuk menyimpan User.");
     }
+
     @Override
     public ResponseEntity<Object> update(Long id, User user, HttpServletRequest request) {
-        Map<String,Object> mapToken = JwtUtility.extractToken(request);
+        Map<String, Object> mapToken = JwtUtility.extractToken(request);
 
-        if (user == null){
-            return GlobalResponse.dataTidakValid("",request);
+        if (user == null) {
+            return GlobalResponse.dataTidakValid("", request);
         }
-        try{
+        try {
             Optional<User> userOptional = userRepository.findById(id);
-            if (userOptional.isEmpty()){
-                return GlobalResponse.dataTidakDitemukan("",request);
+            if (userOptional.isEmpty()) {
+                return GlobalResponse.dataTidakDitemukan("", request);
             }
             User userNext = userOptional.get();
             modelMapper.map(user, userNext);
@@ -64,21 +65,21 @@ public class UserService implements IService<User> {
             return GlobalResponse.dataBerhasilDiubah(request);
         } catch (Exception e) {
             //Logging error//
-            return GlobalResponse.terjadiKesalahan("",request);
+            return GlobalResponse.terjadiKesalahan("", request);
         }
     }
 
     @Override
     public ResponseEntity<Object> delete(Long id, HttpServletRequest request) {
-        try{
-            if (!userRepository.existsById(id)){
-                return GlobalResponse.dataTidakDitemukan("",request);
+        try {
+            if (!userRepository.existsById(id)) {
+                return GlobalResponse.dataTidakDitemukan("", request);
             }
             userRepository.deleteById(id);
             return GlobalResponse.dataBerhasilDihapus(request);
         } catch (Exception e) {
             //Logging error//
-            return GlobalResponse.terjadiKesalahan("",request);
+            return GlobalResponse.terjadiKesalahan("", request);
         }
     }
 
@@ -110,15 +111,15 @@ public class UserService implements IService<User> {
     @Override
     public ResponseEntity<Object> findById(Long id, HttpServletRequest request) {
         Optional<User> userOptional = Optional.empty();
-        try{
+        try {
             userOptional = userRepository.findById(id);
-            if (userOptional.isEmpty()){
-                return GlobalResponse.dataTidakDitemukan("",request);
+            if (userOptional.isEmpty()) {
+                return GlobalResponse.dataTidakDitemukan("", request);
             }
-            return GlobalResponse.dataDitemukan(userOptional.get(),request);
+            return GlobalResponse.dataDitemukan(userOptional.get(), request);
         } catch (Exception e) {
             //Logging error//
-            return GlobalResponse.terjadiKesalahan("",request);
+            return GlobalResponse.terjadiKesalahan("", request);
         }
     }
 
@@ -127,22 +128,23 @@ public class UserService implements IService<User> {
         Page<User> page = null;
         List<User> list = null;
 
-        switch (columnName){
-            case "nama"->page = userRepository.findByNamaContainsIgnoreCase(value,pageable);
-            case "alamat"->page = userRepository.findByAlamatContainsIgnoreCase(value,pageable);
-            default ->page = userRepository.findAll(pageable);
+        switch (columnName) {
+            case "nama" -> page = userRepository.findByNamaContainsIgnoreCase(value, pageable);
+            case "alamat" -> page = userRepository.findByAlamatContainsIgnoreCase(value, pageable);
+            case "akses" -> page = userRepository.findByAkses_Id(Long.parseLong(value), pageable);
+            default -> page = userRepository.findAll(pageable);
 
         }
         list = page.getContent();
 
         List<RespUserDTO> responseList = convertToRespUsersDTO(list);
 
-        return GlobalResponse.dataDitemukan(transformPagination.transformPagination(responseList,page,null,null),request);
+        return GlobalResponse.dataDitemukan(transformPagination.transformPagination(responseList, page, null, null), request);
     }
 
-    public List<RespUserDTO> convertToRespUsersDTO(List<User> users){
+    public List<RespUserDTO> convertToRespUsersDTO(List<User> users) {
         List<RespUserDTO> responseListDTO = new ArrayList<>();
-        for (User user : users){
+        for (User user : users) {
 
             RespUserDTO respUserDTO = new RespUserDTO();
             respUserDTO.setId(user.getId());
@@ -163,7 +165,7 @@ public class UserService implements IService<User> {
         return responseListDTO;
     }
 
-    public User convertDtoToEntity(ValUserDTO regisDTO){
+    public User convertDtoToEntity(ValUserDTO regisDTO) {
         return modelMapper.map(regisDTO, User.class);
     }
 }

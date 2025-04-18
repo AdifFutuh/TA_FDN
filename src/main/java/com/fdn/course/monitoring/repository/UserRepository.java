@@ -31,4 +31,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByAlamatContainsIgnoreCase(String nama, Pageable pageable);
     List<User> findByAlamatContainsIgnoreCase(String nama);
 
+    Page<User> findByAkses_Id(long id, Pageable pageable);
+
 }

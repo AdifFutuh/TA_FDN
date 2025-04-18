@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class UserCourseProdressService implements IService<UserCourseProgress> {
+public class UserCourseProgressService implements IService<UserCourseProgress> {
 
     @Autowired
     private UserCourseProgressRepository userCourseProgressRepository;

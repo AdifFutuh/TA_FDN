@@ -48,30 +48,30 @@ public class InitialData implements CommandLineRunner {
         );
         groupMenuRepository.saveAll(groupMenus);
 
-        if (menuRepository.count() > 0 ) {
+        if (menuRepository.count() > 0) {
             System.out.println("⚡ Data sudah ada, tidak perlu insert ulang.");
             return;
         }
 
         List<Menu> menus = List.of(
                 new Menu("Dashboard Admin", groupMenus.getFirst(), "/dashboard-admin", LocalDateTime.now()),
-                new Menu("Dashboard", groupMenus.get(3),"/dashboard",  LocalDateTime.now()),
+                new Menu("Dashboard", groupMenus.get(3), "/dashboard", LocalDateTime.now()),
                 new Menu("Manajemen Pengguna", groupMenus.getFirst(), "/users", LocalDateTime.now()),
-                new Menu("Manajemen Akses",  groupMenus.getFirst(),  "/access", LocalDateTime.now()),
-                new Menu("Daftar Pengguna",groupMenus.get(3), "/user-list", LocalDateTime.now()),
-                new Menu("Daftar Kursus",groupMenus.get(3), "/courses", LocalDateTime.now())
+                new Menu("Daftar Pengguna", groupMenus.get(3), "/user-list", LocalDateTime.now()),
+                new Menu("Daftar Kursus", groupMenus.get(3), "/courses", LocalDateTime.now()),
+                new Menu("Kursus Saya", groupMenus.get(3), "/my-course", LocalDateTime.now())
         );
         menuRepository.saveAll(menus);
 
-        if (accessRepository.count() > 0 ) {
+        if (accessRepository.count() > 0) {
             System.out.println("Data sudah ada, tidak perlu insert ulang.");
             return;
         }
 
         List<Access> accesses = List.of(
-                new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), menus),
-                new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(), menus),
-                new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(), List.of(menus.get(3)))
+                new Access("Super Admin", "Hak akses tertinggi", LocalDateTime.now(), List.of(menus.getFirst(),menus.get(2), menus.get(3), menus.get(4))),
+                new Access("Admin", "Akses manajemen dan tata kelola", LocalDateTime.now(),List.of(menus.getFirst(),menus.get(2), menus.get(3), menus.get(4))),
+                new Access("Peserta", "Hak akses khusus dan umum", LocalDateTime.now(), List.of(menus.get(3), menus.get(4), menus.get(5)))
         );
         accessRepository.saveAll(accesses);
 

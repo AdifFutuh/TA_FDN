@@ -28,7 +28,7 @@ public class DetailCourse {
     private String content;
 
     @Column(name = "Urutan")
-    private Integer urutan;
+    private int urutan;
 
     @Column(name = "CreatedDate",nullable = false,updatable = false)
     @CreationTimestamp

@@ -31,6 +31,48 @@ public class CourseController {
     @Autowired
     private UserDetailCourseService userDetailCourseService;
 
+    @GetMapping("/course-list/{page}")
+    @PreAuthorize("hasAuthority('Daftar Kursus')")
+    public ResponseEntity<Object>findAllCourse(
+            HttpServletRequest request,
+            @PathVariable(value = "page") Integer page){
+        Pageable pageable = PageRequest.of(page,2, Sort.by("id"));
+        return courseService.findAll(pageable,request);
+    }
+
+    @GetMapping("/dtl/{id}")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    public ResponseEntity<Object> findCourseById(
+            @PathVariable(value = "id") Long id, HttpServletRequest request){
+        return courseService.findById(id,request);
+    }
+
+    @GetMapping("/{sort}/{sortBy}/{page}")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    public ResponseEntity<Object> findByParamsAsAdmin(
+            @PathVariable(value = "sort") String sort,
+            @PathVariable(value = "sortBy") String sortBy,
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "value") String value,
+            HttpServletRequest request
+    ) {
+        Pageable pageable = null;
+        if (sortBy.equals("nama")) {
+            sortBy = "nama";
+        } else {
+            sortBy = "id";
+        }
+        if (sort.equals("asc")) {
+            pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+        }
+
+        return courseService.findByParam(pageable,column,value,request);
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> addCourse(
@@ -40,13 +82,46 @@ public class CourseController {
         return courseService.save(courseService.convertDtoToEntity(courseDTO), request);
     }
 
-    @PostMapping("/detail")
+    @DeleteMapping("/d/{id}")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    public ResponseEntity<Object> delete(
+            @PathVariable(value = "id") Long id, HttpServletRequest request){
+        return courseService.delete(id,request);
+    }
+
+    @PostMapping("/add-detail")
     @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> addDetailCourse(
             @Valid @RequestBody ValDetailCourseDTO detailCourseDTO,
             HttpServletRequest request
     ){
         return detailCourseService.save(detailCourseService.convertDtoToEntity(detailCourseDTO), request);
+    }
+
+
+    //get data detail course by nama course
+    @GetMapping("/detail-course/{page}")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    public ResponseEntity<Object> findDetailCourseByCourse(
+            @PathVariable(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "column") String column,
+            @RequestParam(value = "course") String value,
+            HttpServletRequest request
+    ) {
+        Pageable pageable = null;
+
+        pageable = PageRequest.of(page,size, Sort.by("urutan"));
+
+
+        return detailCourseService.findByParam(pageable,column,value,request);
+    }
+
+    @GetMapping("/detail-course/dtl/{id}")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    public ResponseEntity<Object> findDetailCourseById(
+            @PathVariable(value = "id") Long id, HttpServletRequest request){
+        return detailCourseService.findById(id,request);
     }
 
     @PostMapping("/{idUser}/{idDetailCourse}")
