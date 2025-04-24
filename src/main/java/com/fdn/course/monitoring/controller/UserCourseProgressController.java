@@ -27,13 +27,22 @@ public class UserCourseProgressController {
         return userCourseProgressService.save(userCourseProgressService.convertDtoToEntity(userCourseProgressDTO),request);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/progress-approve/{id}")
     @PreAuthorize("hasAuthority('Dashboard Admin')")
     public ResponseEntity<Object> approveSummary(
             @PathVariable(value = "id") Long id,
             HttpServletRequest request
     ){
         return userDetailCourseService.approveSummary(id,request);
+    }
+
+    @GetMapping("/progress-reject/{id}")
+    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    public ResponseEntity<Object> rejectSummary(
+            @PathVariable(value = "id") Long id,
+            HttpServletRequest request
+    ){
+        return userDetailCourseService.rejectSummary(id,request);
     }
 
 }

@@ -6,7 +6,6 @@ import com.fdn.course.monitoring.dto.validation.ValCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValDetailCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValMapUserDetailCourseDTO;
 import com.fdn.course.monitoring.model.User;
-import com.fdn.course.monitoring.repository.UserCourseProgressRepository;
 import com.fdn.course.monitoring.repository.UserRepository;
 import com.fdn.course.monitoring.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -155,7 +154,7 @@ public class CourseController {
     }
 
     @PostMapping("/{idUser}/{idDetailCourse}")
-    @PreAuthorize("hasAuthority('Dashboard')")
+    @PreAuthorize("hasAuthority('Kursus Saya')")
     public ResponseEntity<Object> addProgress(
             @PathVariable(value = "idUser") long idUser,
             @PathVariable(value = "idDetailCourse") long idDetailCourse,

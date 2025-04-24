@@ -154,6 +154,26 @@ public class UserDetailCourseService implements IService<UserDetailCourse> {
 
         return GlobalResponse.dataBerhasilDiubah(request);
     }
+
+    public ResponseEntity<Object> rejectSummary(long id, HttpServletRequest request) {
+        Map<String, Object> mapToken = JwtUtility.extractToken(request);
+        Optional<UserDetailCourse> mapUserDetailCourseOptional = userDetailCourseRepository.findById(id);
+
+        if (mapUserDetailCourseOptional.isEmpty()) {
+            return GlobalResponse.dataTidakDitemukan("", request);
+        }
+
+        UserDetailCourse mapUserDetailCourse = mapUserDetailCourseOptional.get();
+
+        mapUserDetailCourse.setStatus(Status.REJECTED);
+        mapUserDetailCourse.setApprovedAt(new Date()); // Optional: masih pakai approvedAt, bisa ganti ke rejectedAt kalau ada
+        mapUserDetailCourse.setApprovedBy(Long.valueOf(mapToken.get("userId").toString()));
+        userDetailCourseRepository.save(mapUserDetailCourse);
+
+
+        return GlobalResponse.dataBerhasilDiubah(request);
+    }
+
     public UserDetailCourse convertDtoToEntity(ValMapUserDetailCourseDTO mapUserDetailCourseDTO){
         UserDetailCourse mapUserDetailCourse = new UserDetailCourse();
         User user = userRepository.getReferenceById(mapUserDetailCourseDTO.getUser().getId());
