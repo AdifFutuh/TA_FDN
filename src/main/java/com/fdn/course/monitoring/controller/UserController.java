@@ -21,7 +21,7 @@ public class UserController {
 
     //untuk mengambil semua list peserta
     @GetMapping("/user-list")
-    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    @PreAuthorize("hasAuthority('Daftar Pengguna')")
     public ResponseEntity<Object>findAllAsAdmin(HttpServletRequest request){
         Pageable pageable = PageRequest.of(0,20, Sort.by("id"));
         return userService.findAll(pageable,request);
@@ -29,7 +29,7 @@ public class UserController {
 
     //Mencari data user
     @GetMapping("/{sort}/{sortBy}/{page}")
-    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    @PreAuthorize("hasAuthority('Daftar Pengguna')")
     public ResponseEntity<Object> findAllByParam(
             @PathVariable(value = "sort") String sort,
             @PathVariable(value = "sortBy") String sortBy,

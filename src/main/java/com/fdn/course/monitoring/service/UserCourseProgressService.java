@@ -1,21 +1,25 @@
 package com.fdn.course.monitoring.service;
 
 import com.fdn.course.monitoring.core.IService;
+import com.fdn.course.monitoring.dto.response.RespCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValUserCourseProgressDTO;
 import com.fdn.course.monitoring.handler.GlobalResponse;
+import com.fdn.course.monitoring.model.Course;
+import com.fdn.course.monitoring.model.User;
 import com.fdn.course.monitoring.model.UserCourseProgress;
 import com.fdn.course.monitoring.repository.*;
 import com.fdn.course.monitoring.security.JwtUtility;
 import com.fdn.course.monitoring.util.Status;
+import com.fdn.course.monitoring.util.TransformPagination;
 import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserCourseProgressService implements IService<UserCourseProgress> {
@@ -37,6 +41,9 @@ public class UserCourseProgressService implements IService<UserCourseProgress> {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private TransformPagination transformPagination;
 
     @Override
     public ResponseEntity<Object> save(UserCourseProgress userCourseProgress, HttpServletRequest request) {
@@ -118,6 +125,30 @@ public class UserCourseProgressService implements IService<UserCourseProgress> {
     public ResponseEntity<Object> findByParam(Pageable pageable, String columnName, String value, HttpServletRequest request) {
         return null;
     }
+
+    public ResponseEntity<Object> findCourseByUser(User user, HttpServletRequest request) {
+        try {
+            // Ambil list progress berdasarkan user
+            List<UserCourseProgress> userCourseProgressList = userCourseProgressRepository.findByUser(user);
+
+
+            List<RespCourseDTO> courseList = new ArrayList<>();
+
+            for (UserCourseProgress progress : userCourseProgressList) {
+                RespCourseDTO courseDTO = new RespCourseDTO();
+                courseDTO.setId(progress.getCourse().getId());
+                courseDTO.setNama(progress.getCourse().getNama());
+                courseDTO.setDeskripsi(progress.getCourse().getDeskripsi());
+                courseList.add(courseDTO);
+            }
+
+            return GlobalResponse.dataDitemukan(courseList, request);
+
+        } catch (Exception e) {
+            return GlobalResponse.dataTidakDitemukan("", request);
+        }
+    }
+
 
     public UserCourseProgress convertDtoToEntity(ValUserCourseProgressDTO userCourseProgressDTO){
         return modelMapper.map(userCourseProgressDTO, UserCourseProgress.class);

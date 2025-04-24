@@ -193,6 +193,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<MenuLoginDTO> ltMenu = modelMapper.map(userNext.getAkses().getLtMenu(), new TypeToken<List<MenuLoginDTO>>(){}.getType());
 
         Map<String,Object> response = new HashMap<>();
+        response.put("id", userNext.getId());
         response.put("token", token);
         response.put("menu",new TransformationDataManual().doTransformAksesMenuLogin(ltMenu));
 

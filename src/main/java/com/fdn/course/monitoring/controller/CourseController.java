@@ -5,9 +5,10 @@ import com.fdn.course.monitoring.dto.reference.RefUserDTO;
 import com.fdn.course.monitoring.dto.validation.ValCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValDetailCourseDTO;
 import com.fdn.course.monitoring.dto.validation.ValMapUserDetailCourseDTO;
-import com.fdn.course.monitoring.service.CourseService;
-import com.fdn.course.monitoring.service.DetailCourseService;
-import com.fdn.course.monitoring.service.UserDetailCourseService;
+import com.fdn.course.monitoring.model.User;
+import com.fdn.course.monitoring.repository.UserCourseProgressRepository;
+import com.fdn.course.monitoring.repository.UserRepository;
+import com.fdn.course.monitoring.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("course")
 public class CourseController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CourseService courseService;
@@ -30,6 +36,17 @@ public class CourseController {
 
     @Autowired
     private UserDetailCourseService userDetailCourseService;
+
+    @Autowired
+    private UserCourseProgressService userCourseProgressService;
+
+
+    @GetMapping("/all-course-list")
+    @PreAuthorize("hasAuthority('Daftar Kursus')")
+    public ResponseEntity<Object>findAllCourseAsAdmin(HttpServletRequest request){
+        Pageable pageable = PageRequest.of(0,20, Sort.by("id"));
+        return courseService.findAll(pageable,request);
+    }
 
     @GetMapping("/course-list/{page}")
     @PreAuthorize("hasAuthority('Daftar Kursus')")
@@ -101,7 +118,7 @@ public class CourseController {
 
     //get data detail course by nama course
     @GetMapping("/detail-course/{page}")
-    @PreAuthorize("hasAuthority('Dashboard Admin')")
+    @PreAuthorize("hasAuthority('Daftar Kursus')")
     public ResponseEntity<Object> findDetailCourseByCourse(
             @PathVariable(value = "page") Integer page,
             @RequestParam(value = "size") Integer size,
@@ -115,6 +132,19 @@ public class CourseController {
 
 
         return detailCourseService.findByParam(pageable,column,value,request);
+    }
+
+    @GetMapping("/my-course/{idUser}")
+    @PreAuthorize("hasAuthority('Daftar Kursus')")
+    public ResponseEntity<Object> findEnrollmentCourse(
+            @PathVariable(value = "idUser") Long idUser,
+            HttpServletRequest request
+    ){
+        
+        Optional<User> user = userRepository.findById(idUser);
+        User userNext = user.get();
+
+        return userCourseProgressService.findCourseByUser(userNext,request);
     }
 
     @GetMapping("/detail-course/dtl/{id}")
