@@ -44,7 +44,7 @@ public class DetailCourseService implements IService<DetailCourse> {
             return GlobalResponse.dataTidakDitemukan("", request);
         }
 
-        if (detailCourseRepository.existsByUrutan(detailCourse.getUrutan())){
+        if (detailCourseRepository.existsByCourseAndUrutan(detailCourse.getCourse(), detailCourse.getUrutan())){
             return GlobalResponse.dataSudahTerdaftar("",request);
         }
         detailCourseRepository.save(detailCourse);

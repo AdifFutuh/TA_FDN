@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface DetailCourseRepository extends JpaRepository<DetailCourse, Long> {
 
-    boolean existsByUrutan(int urutan);
+    boolean existsByCourseAndUrutan(Course course, int urutan);
 
     long countByCourse(Course course);
 

@@ -32,7 +32,7 @@ public class UserCourseProgress {
     private LocalDateTime createdDate;
 
     @UpdateTimestamp
-    @Column(name = "UpdateDate",nullable = false,updatable = false)
+    @Column(name = "UpdateDate",nullable = false)
     private LocalDateTime updateTime;
 
     @Column(name = "ModifiedBy",insertable = false)
